@@ -1,0 +1,2 @@
+debian/autoload.php			usr/share/php/Symfony
+src/Symfony/Bundle/FullStack.php	usr/share/php/Symfony/Bundle

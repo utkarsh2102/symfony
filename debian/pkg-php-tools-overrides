@@ -1,0 +1,5 @@
+composer	package-versions-deprecated	none
+egulias		email-validator			php-email-validator
+ocramius	proxy-manager			php-proxy-manager
+paragonie	random_compat			php-random-compat
+symfony		polyfill-uuid			php-uuid none
