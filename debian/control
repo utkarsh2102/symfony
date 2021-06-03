@@ -1,5 +1,6 @@
 Source: symfony
-Maintainer: Debian PHP PEAR Maintainers <pkg-php-pear@lists.alioth.debian.org>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian PHP PEAR Maintainers <pkg-php-pear@lists.alioth.debian.org>
 Uploaders: Daniel Beyer <dabe@deb.ymc.ch>, David Prévot <taffit@debian.org>
 Section: php
 Priority: optional
