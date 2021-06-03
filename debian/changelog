@@ -1,3 +1,27 @@
+symfony (5.2.6+dfsg-1ubuntu1) impish; urgency=medium
+
+  * d/rules: Temporarily disable testsuite to allow sidestepping
+    circular build dependency on php-twig (and its components).
+    This change can be reverted once both php-twig and symfony
+    have migrated. (LP: #1929880)
+  * d/control: Drop php-apcu-bc from BD-I as this has been
+    deprecated & not built for PHP 8.0 and thus emits a bunch
+    of warnings during the build.
+  * d/p/bump-deps-test.patch: Add patch to bump dependencies
+    & thus work with the ones which are in the archive.
+    This will help sort out a lot of uninstallability issues.
+  * d/p/drop-bd-on-php-doctrine-bundle.patch: Drop BD on
+    php-doctrine-bundle as it depends on symfony so pulls in
+    an older version causing the uninstallability mess.
+    - d/{,tests/}control: Drop BD to reflect the above
+      change so we don't pull this in at all.
+    NOTE: This can (and shall) be dropped once php-twig
+          and symfony have settled down and migrated.
+          When reverting, we need to add -annotations
+          after fixing that for -psr-cache, et al.
+
+ -- Utkarsh Gupta <utkarsh.gupta@canonical.com>  Thu, 03 Jun 2021 19:47:20 +0530
+
 symfony (5.2.6+dfsg-1) experimental; urgency=medium
 
   [ Fabien Potencier ]
