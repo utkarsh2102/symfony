@@ -22,3 +22,4 @@ HttpClient-Skip-tests-relying-on-amphp-http-client.patch
 PhpUnit-Skip-test-currently-failing.patch
 Adapt-conflict-to-Debian-expectations.patch
 bump-deps-test.patch
+drop-bd-on-php-doctrine-bundle.patch
