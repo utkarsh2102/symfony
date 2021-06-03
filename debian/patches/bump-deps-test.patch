@@ -1,0 +1,98 @@
+Description: [UBUNTU-ONLY] Bump dependencies to avoid
+ uninstallability issues when dh-sequence-phpcomposure
+ silently adds restretictions to binaries.
+Author: Utkarsh Gupta <utkarsh.gupta@canonical.com>
+Origin: vendor
+Forwarded: not-needed
+Last-Update: 2021-06-01
+
+--- a/composer.json
++++ b/composer.json
+@@ -38,8 +38,8 @@
+         "doctrine/event-manager": "~1.0",
+         "doctrine/persistence": "^2",
+         "twig/twig": "^2.13|^3.0.4",
+-        "psr/cache": "^1.0|^2.0",
+-        "psr/container": "^1.0",
++        "psr/cache": "^3.0",
++        "psr/container": "^2.0",
+         "psr/event-dispatcher": "^1.0",
+         "psr/link": "^1.0",
+         "psr/log": "~1.0",
+--- a/src/Symfony/Component/Cache/composer.json
++++ b/src/Symfony/Component/Cache/composer.json
+@@ -22,7 +22,7 @@
+     },
+     "require": {
+         "php": ">=7.2.5",
+-        "psr/cache": "^1.0|^2.0",
++        "psr/cache": "^3.0",
+         "psr/log": "^1.1",
+         "symfony/cache-contracts": "^1.1.7|^2",
+         "symfony/polyfill-php80": "^1.15",
+--- a/src/Symfony/Component/DependencyInjection/composer.json
++++ b/src/Symfony/Component/DependencyInjection/composer.json
+@@ -17,7 +17,7 @@
+     ],
+     "require": {
+         "php": ">=7.2.5",
+-        "psr/container": "^1.0",
++        "psr/container": "^2.0",
+         "symfony/deprecation-contracts": "^2.1",
+         "symfony/polyfill-php80": "^1.15",
+         "symfony/service-contracts": "^1.1.6|^2"
+--- a/src/Symfony/Component/EventDispatcher/composer.json
++++ b/src/Symfony/Component/EventDispatcher/composer.json
+@@ -18,7 +18,7 @@
+     "require": {
+         "php": ">=7.2.5",
+         "symfony/deprecation-contracts": "^2.1",
+-        "symfony/event-dispatcher-contracts": "^2",
++        "symfony/event-dispatcher-contracts": "^2.0",
+         "symfony/polyfill-php80": "^1.15"
+     },
+     "require-dev": {
+--- a/src/Symfony/Component/Notifier/composer.json
++++ b/src/Symfony/Component/Notifier/composer.json
+@@ -21,7 +21,7 @@
+         "psr/log": "~1.0"
+     },
+     "require-dev": {
+-        "symfony/event-dispatcher-contracts": "^2",
++        "symfony/event-dispatcher-contracts": "^2.0",
+         "symfony/http-client-contracts": "^2"
+     },
+     "conflict": {
+--- a/src/Symfony/Component/Security/Core/composer.json
++++ b/src/Symfony/Component/Security/Core/composer.json
+@@ -17,7 +17,7 @@
+     ],
+     "require": {
+         "php": ">=7.2.5",
+-        "symfony/event-dispatcher-contracts": "^1.1|^2",
++        "symfony/event-dispatcher-contracts": "^2.0",
+         "symfony/polyfill-php80": "^1.15",
+         "symfony/service-contracts": "^1.1.6|^2",
+         "symfony/deprecation-contracts": "^2.1"
+--- a/src/Symfony/Contracts/Service/composer.json
++++ b/src/Symfony/Contracts/Service/composer.json
+@@ -17,7 +17,7 @@
+     ],
+     "require": {
+         "php": ">=7.2.5",
+-        "psr/container": "^1.0"
++        "psr/container": "^2.0"
+     },
+     "suggest": {
+         "symfony/service-implementation": ""
+--- a/src/Symfony/Contracts/composer.json
++++ b/src/Symfony/Contracts/composer.json
+@@ -18,7 +18,7 @@
+     "require": {
+         "php": ">=7.2.5",
+         "psr/cache": "^1.0|^2.0|^3.0",
+-        "psr/container": "^1.0",
++        "psr/container": "^2.0",
+         "psr/event-dispatcher": "^1.0"
+     },
+     "require-dev": {
