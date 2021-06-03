@@ -74,20 +74,21 @@ endif
 		src/Symfony/Component/Intl
 
 override_dh_auto_test:
-	ln -s ./src/Symfony ./Symfony
-	mkdir --parents vendor
-	cp debian/autoload.php src/Symfony
-	phpab	--output vendor/autoload.php \
-		--whitelist '*\\tests\\*' \
-		--tolerant \
-		--template debian/autoload.php.tests.tpl \
-		--blacklist 'symfony\\component\\dependencyinjection\\tests\\fixtures\\container\\projectservicecontainer' \
-		--exclude 'Symfony/Bridge/ProxyManager/Tests/LazyProxy/PhpDumper/Fixtures/proxy-implem.php' \
-		--exclude 'Symfony/Component/Routing/Tests/Fixtures/AttributesFixtures/*' \
-		Symfony
-	# Actual tests suite
-	components=$$(find src/Symfony -mindepth 3 -type f -name phpunit.xml.dist -printf '%h\n') && \
-	 echo "$$components" | parallel --gnu --keep-order '/bin/echo -e "\\nRunning {} tests"; SYMFONY_DEPRECATIONS_HELPER=weak phpunit -v --colors=always --exclude-group network,tty,benchmark,intl-data,functional,composer {} || (/bin/echo -e "\\e[41mKO\\e[0m {}" && $$(exit 1));';
+	##ln -s ./src/Symfony ./Symfony
+	##mkdir --parents vendor
+	##cp debian/autoload.php src/Symfony
+	##phpab	--output vendor/autoload.php \
+	##	--whitelist '*\\tests\\*' \
+	##	--tolerant \
+	##	--template debian/autoload.php.tests.tpl \
+	##	--blacklist 'symfony\\component\\dependencyinjection\\tests\\fixtures\\container\\projectservicecontainer' \
+	##	--exclude 'Symfony/Bridge/ProxyManager/Tests/LazyProxy/PhpDumper/Fixtures/proxy-implem.php' \
+	##	--exclude 'Symfony/Component/Routing/Tests/Fixtures/AttributesFixtures/*' \
+	##	Symfony
+	### Actual tests suite
+	##components=$$(find src/Symfony -mindepth 3 -type f -name phpunit.xml.dist -printf '%h\n') && \
+	## echo "$$components" | parallel --gnu --keep-order '/bin/echo -e "\\nRunning {} tests"; SYMFONY_DEPRECATIONS_HELPER=weak phpunit -v --colors=always --exclude-group network,tty,benchmark,intl-data,functional,composer {} || (/bin/echo -e "\\e[41mKO\\e[0m {}" && $$(exit 1));';
+	echo "*** TESTSUITE DISABLED FOR BOOTSTRAP - See LP: #1929880 ***"
 
 override_dh_phpcomposer:
 	dh_phpcomposer --package=php-symfony --sourcedirectory=./
