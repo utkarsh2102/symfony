@@ -80,6 +80,9 @@ final class SlackTransport extends AbstractTransport
         $response = $this->client->request('POST', 'https://'.$this->getEndpoint().'/api/chat.postMessage', [
             'json' => array_filter($options),
             'auth_bearer' => $this->accessToken,
+            'headers' => [
+                'Content-Type' => 'application/json; charset=utf-8',
+            ],
         ]);
 
         if (200 !== $response->getStatusCode()) {
@@ -91,6 +94,9 @@ final class SlackTransport extends AbstractTransport
             throw new TransportException(sprintf('Unable to post the Slack message: "%s".', $result['error']), $response);
         }
 
-        return new SentMessage($message, (string) $this);
+        $sentMessage = new SentMessage($message, (string) $this);
+        $sentMessage->setMessageId($result['ts']);
+
+        return $sentMessage;
     }
 }

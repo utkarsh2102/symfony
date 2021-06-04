@@ -52,6 +52,7 @@
         "symfony/polyfill-mbstring": "~1.0",
         "symfony/polyfill-php73": "^1.11",
         "symfony/polyfill-php80": "^1.15",
+        "symfony/polyfill-php81": "^1.22",
         "symfony/polyfill-uuid": "^1.15"
     },
     "replace": {
@@ -129,12 +130,11 @@
         "cache/integration-tests": "dev-master",
         "composer/package-versions-deprecated": "^1.8",
         "doctrine/annotations": "^1.10.4",
-        "doctrine/cache": "~1.6",
+        "doctrine/cache": "^1.6|^2.0",
         "doctrine/collections": "~1.0",
         "doctrine/data-fixtures": "^1.1",
         "doctrine/dbal": "^2.10|^3.0",
         "doctrine/orm": "^2.7.3",
-        "doctrine/doctrine-bundle": "^2.0",
         "guzzlehttp/promises": "^1.4",
         "masterminds/html5": "^2.6",
         "monolog/monolog": "^1.25.1|^2",
