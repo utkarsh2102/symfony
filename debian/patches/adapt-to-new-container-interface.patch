@@ -1,0 +1,143 @@
+Description: Adapt to new Psr/Container's interface.
+Author: Utkarsh Gupta <utkarsh.gupta@canonical.com>
+Origin: vendor
+Bug: https://github.com/symfony/symfony/issues/41537
+Forwarded: no; will do once the archive opens.
+Last-Update: 2021-06-04
+
+--- a/src/Symfony/Component/Cache/CacheItem.php
++++ b/src/Symfony/Component/Cache/CacheItem.php
+@@ -46,7 +46,7 @@
+      *
+      * @return mixed
+      */
+-    public function get()
++    public function get(): mixed
+     {
+         return $this->value;
+     }
+@@ -64,7 +64,7 @@
+      *
+      * @return $this
+      */
+-    public function set($value): self
++    public function set(mixed $value): static
+     {
+         $this->value = $value;
+ 
+@@ -76,7 +76,7 @@
+      *
+      * @return $this
+      */
+-    public function expiresAt($expiration): self
++    public function expiresAt(?\DateTimeInterface $expiration): static
+     {
+         if (null === $expiration) {
+             $this->expiry = null;
+@@ -94,7 +94,7 @@
+      *
+      * @return $this
+      */
+-    public function expiresAfter($time): self
++    public function expiresAfter(int|\DateInterval|null $time): static
+     {
+         if (null === $time) {
+             $this->expiry = null;
+--- a/src/Symfony/Component/DependencyInjection/ContainerInterface.php
++++ b/src/Symfony/Component/DependencyInjection/ContainerInterface.php
+@@ -57,7 +57,7 @@
+      *
+      * @return bool true if the service is defined, false otherwise
+      */
+-    public function has($id);
++    public function has($id): bool;
+ 
+     /**
+      * Check for whether or not a service has been initialized.
+--- a/src/Symfony/Component/DependencyInjection/Container.php
++++ b/src/Symfony/Component/DependencyInjection/Container.php
+@@ -192,7 +192,7 @@
+      *
+      * @return bool true if the service is defined, false otherwise
+      */
+-    public function has($id)
++    public function has($id): bool
+     {
+         if (isset($this->aliases[$id])) {
+             $id = $this->aliases[$id];
+--- a/src/Symfony/Component/DependencyInjection/ContainerBuilder.php
++++ b/src/Symfony/Component/DependencyInjection/ContainerBuilder.php
+@@ -511,7 +511,7 @@
+      *
+      * @return bool true if the service is defined, false otherwise
+      */
+-    public function has($id)
++    public function has($id): bool
+     {
+         $id = (string) $id;
+ 
+--- a/src/Symfony/Component/DependencyInjection/ParameterBag/ContainerBag.php
++++ b/src/Symfony/Component/DependencyInjection/ParameterBag/ContainerBag.php
+@@ -44,7 +44,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function has($name)
++    public function has($name): bool
+     {
+         return $this->container->hasParameter($name);
+     }
+--- a/src/Symfony/Component/Cache/Adapter/AdapterInterface.php
++++ b/src/Symfony/Component/Cache/Adapter/AdapterInterface.php
+@@ -29,19 +29,19 @@
+      *
+      * @return CacheItem
+      */
+-    public function getItem($key);
++    public function getItem($key): CacheItem;
+ 
+     /**
+      * {@inheritdoc}
+      *
+      * @return \Traversable|CacheItem[]
+      */
+-    public function getItems(array $keys = []);
++    public function getItems(array $keys = []): iterable;
+ 
+     /**
+      * {@inheritdoc}
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '');
++    public function clear(string $prefix = ''): bool;
+ }
+--- a/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php
++++ b/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php
+@@ -119,7 +119,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItem($key)
++    public function getItem($key): bool
+     {
+         if (!$isHit = $this->hasItem($key)) {
+             $value = null;
+@@ -139,7 +139,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItems(array $keys = [])
++    public function getItems(array $keys = []): iterable
+     {
+         foreach ($keys as $key) {
+             if (!\is_string($key) || !isset($this->expiries[$key])) {
+@@ -259,7 +259,7 @@
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '')
++    public function clear(string $prefix = ''): bool
+     {
+         if ('' !== $prefix) {
+             $now = microtime(true);
