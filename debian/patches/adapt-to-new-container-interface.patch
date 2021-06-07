@@ -114,12 +114,21 @@ Last-Update: 2021-06-04
  }
 --- a/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php
 +++ b/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php
+@@ -99,7 +99,7 @@
+      *
+      * @return bool
+      */
+-    public function hasItem($key)
++    public function hasItem($key): bool
+     {
+         if (\is_string($key) && isset($this->expiries[$key]) && $this->expiries[$key] > microtime(true)) {
+             if ($this->maxItems) {
 @@ -119,7 +119,7 @@
      /**
       * {@inheritdoc}
       */
 -    public function getItem($key)
-+    public function getItem($key): bool
++    public function getItem($key): CacheItem
      {
          if (!$isHit = $this->hasItem($key)) {
              $value = null;
@@ -132,6 +141,51 @@ Last-Update: 2021-06-04
      {
          foreach ($keys as $key) {
              if (!\is_string($key) || !isset($this->expiries[$key])) {
+@@ -155,7 +155,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItem($key)
++    public function deleteItem($key): bool
+     {
+         if (!\is_string($key) || !isset($this->expiries[$key])) {
+             CacheItem::validateKey($key);
+@@ -170,7 +170,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItems(array $keys)
++    public function deleteItems(array $keys): bool
+     {
+         foreach ($keys as $key) {
+             $this->deleteItem($key);
+@@ -184,7 +184,7 @@
+      *
+      * @return bool
+      */
+-    public function save(CacheItemInterface $item)
++    public function save(CacheItemInterface $item): bool
+     {
+         if (!$item instanceof CacheItem) {
+             return false;
+@@ -239,7 +239,7 @@
+      *
+      * @return bool
+      */
+-    public function saveDeferred(CacheItemInterface $item)
++    public function saveDeferred(CacheItemInterface $item): bool
+     {
+         return $this->save($item);
+     }
+@@ -249,7 +249,7 @@
+      *
+      * @return bool
+      */
+-    public function commit()
++    public function commit(): bool
+     {
+         return true;
+     }
 @@ -259,7 +259,7 @@
       *
       * @return bool
@@ -141,3 +195,673 @@ Last-Update: 2021-06-04
      {
          if ('' !== $prefix) {
              $now = microtime(true);
+@@ -312,7 +312,7 @@
+         $this->clear();
+     }
+ 
+-    private function generateItems(array $keys, $now, $f)
++    private function generateItems(array $keys, $now, $f): \Generator
+     {
+         foreach ($keys as $i => $key) {
+             if (!$isHit = isset($this->expiries[$key]) && ($this->expiries[$key] > $now || !$this->deleteItem($key))) {
+--- a/src/Symfony/Component/Cache/Adapter/ChainAdapter.php
++++ b/src/Symfony/Component/Cache/Adapter/ChainAdapter.php
+@@ -117,7 +117,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItem($key)
++    public function getItem($key): CacheItem
+     {
+         $syncItem = $this->syncItem;
+         $misses = [];
+@@ -142,12 +142,12 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItems(array $keys = [])
++    public function getItems(array $keys = []): iterable
+     {
+         return $this->generateItems($this->adapters[0]->getItems($keys), 0);
+     }
+ 
+-    private function generateItems(iterable $items, int $adapterIndex)
++    private function generateItems(iterable $items, int $adapterIndex): \Generator
+     {
+         $missing = [];
+         $misses = [];
+@@ -183,7 +183,7 @@
+      *
+      * @return bool
+      */
+-    public function hasItem($key)
++    public function hasItem($key): bool
+     {
+         foreach ($this->adapters as $adapter) {
+             if ($adapter->hasItem($key)) {
+@@ -199,7 +199,7 @@
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '')
++    public function clear(string $prefix = ''): bool
+     {
+         $cleared = true;
+         $i = $this->adapterCount;
+@@ -220,7 +220,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItem($key)
++    public function deleteItem($key): bool
+     {
+         $deleted = true;
+         $i = $this->adapterCount;
+@@ -237,7 +237,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItems(array $keys)
++    public function deleteItems(array $keys): bool
+     {
+         $deleted = true;
+         $i = $this->adapterCount;
+@@ -254,7 +254,7 @@
+      *
+      * @return bool
+      */
+-    public function save(CacheItemInterface $item)
++    public function save(CacheItemInterface $item): bool
+     {
+         $saved = true;
+         $i = $this->adapterCount;
+@@ -271,7 +271,7 @@
+      *
+      * @return bool
+      */
+-    public function saveDeferred(CacheItemInterface $item)
++    public function saveDeferred(CacheItemInterface $item): bool
+     {
+         $saved = true;
+         $i = $this->adapterCount;
+@@ -288,7 +288,7 @@
+      *
+      * @return bool
+      */
+-    public function commit()
++    public function commit(): bool
+     {
+         $committed = true;
+         $i = $this->adapterCount;
+--- a/src/Symfony/Component/Cache/Adapter/NullAdapter.php
++++ b/src/Symfony/Component/Cache/Adapter/NullAdapter.php
+@@ -50,7 +50,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItem($key)
++    public function getItem($key): CacheItem
+     {
+         $f = $this->createCacheItem;
+ 
+@@ -60,7 +60,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItems(array $keys = [])
++    public function getItems(array $keys = []): iterable
+     {
+         return $this->generateItems($keys);
+     }
+@@ -70,7 +70,7 @@
+      *
+      * @return bool
+      */
+-    public function hasItem($key)
++    public function hasItem($key): bool
+     {
+         return false;
+     }
+@@ -80,7 +80,7 @@
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '')
++    public function clear(string $prefix = ''): bool
+     {
+         return true;
+     }
+@@ -90,7 +90,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItem($key)
++    public function deleteItem($key): bool
+     {
+         return true;
+     }
+@@ -100,7 +100,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItems(array $keys)
++    public function deleteItems(array $keys): bool
+     {
+         return true;
+     }
+@@ -110,7 +110,7 @@
+      *
+      * @return bool
+      */
+-    public function save(CacheItemInterface $item)
++    public function save(CacheItemInterface $item): bool
+     {
+         return false;
+     }
+@@ -120,7 +120,7 @@
+      *
+      * @return bool
+      */
+-    public function saveDeferred(CacheItemInterface $item)
++    public function saveDeferred(CacheItemInterface $item): bool
+     {
+         return false;
+     }
+@@ -130,7 +130,7 @@
+      *
+      * @return bool
+      */
+-    public function commit()
++    public function commit(): bool
+     {
+         return false;
+     }
+@@ -143,7 +143,7 @@
+         return $this->deleteItem($key);
+     }
+ 
+-    private function generateItems(array $keys)
++    private function generateItems(array $keys): \Generator
+     {
+         $f = $this->createCacheItem;
+ 
+--- a/src/Symfony/Component/Cache/Adapter/PhpArrayAdapter.php
++++ b/src/Symfony/Component/Cache/Adapter/PhpArrayAdapter.php
+@@ -116,7 +116,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItem($key)
++    public function getItem($key): CacheItem
+     {
+         if (!\is_string($key)) {
+             throw new InvalidArgumentException(sprintf('Cache key must be string, "%s" given.', get_debug_type($key)));
+@@ -150,7 +150,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItems(array $keys = [])
++    public function getItems(array $keys = []): iterable
+     {
+         foreach ($keys as $key) {
+             if (!\is_string($key)) {
+@@ -169,7 +169,7 @@
+      *
+      * @return bool
+      */
+-    public function hasItem($key)
++    public function hasItem($key): bool
+     {
+         if (!\is_string($key)) {
+             throw new InvalidArgumentException(sprintf('Cache key must be string, "%s" given.', get_debug_type($key)));
+@@ -186,7 +186,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItem($key)
++    public function deleteItem($key): bool
+     {
+         if (!\is_string($key)) {
+             throw new InvalidArgumentException(sprintf('Cache key must be string, "%s" given.', get_debug_type($key)));
+@@ -203,7 +203,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItems(array $keys)
++    public function deleteItems(array $keys): bool
+     {
+         $deleted = true;
+         $fallbackKeys = [];
+@@ -235,7 +235,7 @@
+      *
+      * @return bool
+      */
+-    public function save(CacheItemInterface $item)
++    public function save(CacheItemInterface $item): bool
+     {
+         if (null === $this->values) {
+             $this->initialize();
+@@ -249,7 +249,7 @@
+      *
+      * @return bool
+      */
+-    public function saveDeferred(CacheItemInterface $item)
++    public function saveDeferred(CacheItemInterface $item): bool
+     {
+         if (null === $this->values) {
+             $this->initialize();
+@@ -263,7 +263,7 @@
+      *
+      * @return bool
+      */
+-    public function commit()
++    public function commit(): bool
+     {
+         return $this->pool->commit();
+     }
+@@ -273,7 +273,7 @@
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '')
++    public function clear(string $prefix = ''): bool
+     {
+         $this->keys = $this->values = [];
+ 
+--- a/src/Symfony/Component/Cache/Adapter/ProxyAdapter.php
++++ b/src/Symfony/Component/Cache/Adapter/ProxyAdapter.php
+@@ -116,7 +116,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItem($key)
++    public function getItem($key): CacheItem
+     {
+         $f = $this->createCacheItem;
+         $item = $this->pool->getItem($this->getId($key));
+@@ -127,7 +127,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItems(array $keys = [])
++    public function getItems(array $keys = []): iterable
+     {
+         if ($this->namespaceLen) {
+             foreach ($keys as $i => $key) {
+@@ -143,7 +143,7 @@
+      *
+      * @return bool
+      */
+-    public function hasItem($key)
++    public function hasItem($key): bool
+     {
+         return $this->pool->hasItem($this->getId($key));
+     }
+@@ -153,7 +153,7 @@
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '')
++    public function clear(string $prefix = ''): bool
+     {
+         if ($this->pool instanceof AdapterInterface) {
+             return $this->pool->clear($this->namespace.$prefix);
+@@ -167,7 +167,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItem($key)
++    public function deleteItem($key): bool
+     {
+         return $this->pool->deleteItem($this->getId($key));
+     }
+@@ -177,7 +177,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItems(array $keys)
++    public function deleteItems(array $keys): bool
+     {
+         if ($this->namespaceLen) {
+             foreach ($keys as $i => $key) {
+@@ -193,7 +193,7 @@
+      *
+      * @return bool
+      */
+-    public function save(CacheItemInterface $item)
++    public function save(CacheItemInterface $item): bool
+     {
+         return $this->doSave($item, __FUNCTION__);
+     }
+@@ -203,7 +203,7 @@
+      *
+      * @return bool
+      */
+-    public function saveDeferred(CacheItemInterface $item)
++    public function saveDeferred(CacheItemInterface $item): bool
+     {
+         return $this->doSave($item, __FUNCTION__);
+     }
+@@ -213,7 +213,7 @@
+      *
+      * @return bool
+      */
+-    public function commit()
++    public function commit(): bool
+     {
+         return $this->pool->commit();
+     }
+@@ -244,7 +244,7 @@
+         return $this->pool->$method($innerItem);
+     }
+ 
+-    private function generateItems(iterable $items)
++    private function generateItems(iterable $items): \Generator
+     {
+         $f = $this->createCacheItem;
+ 
+--- a/src/Symfony/Component/Cache/Adapter/TagAwareAdapter.php
++++ b/src/Symfony/Component/Cache/Adapter/TagAwareAdapter.php
+@@ -108,7 +108,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function invalidateTags(array $tags)
++    public function invalidateTags(array $tags): bool
+     {
+         $ok = true;
+         $tagsByKey = [];
+@@ -153,7 +153,7 @@
+      *
+      * @return bool
+      */
+-    public function hasItem($key)
++    public function hasItem($key): bool
+     {
+         if ($this->deferred) {
+             $this->commit();
+@@ -184,7 +184,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItem($key)
++    public function getItem($key): CacheItem
+     {
+         foreach ($this->getItems([$key]) as $item) {
+             return $item;
+@@ -196,7 +196,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItems(array $keys = [])
++    public function getItems(array $keys = []): iterable
+     {
+         if ($this->deferred) {
+             $this->commit();
+@@ -226,7 +226,7 @@
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '')
++    public function clear(string $prefix = ''): bool
+     {
+         if ('' !== $prefix) {
+             foreach ($this->deferred as $key => $item) {
+@@ -250,7 +250,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItem($key)
++    public function deleteItem($key): bool
+     {
+         return $this->deleteItems([$key]);
+     }
+@@ -260,7 +260,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItems(array $keys)
++    public function deleteItems(array $keys): bool
+     {
+         foreach ($keys as $key) {
+             if ('' !== $key && \is_string($key)) {
+@@ -276,7 +276,7 @@
+      *
+      * @return bool
+      */
+-    public function save(CacheItemInterface $item)
++    public function save(CacheItemInterface $item): bool
+     {
+         if (!$item instanceof CacheItem) {
+             return false;
+@@ -291,7 +291,7 @@
+      *
+      * @return bool
+      */
+-    public function saveDeferred(CacheItemInterface $item)
++    public function saveDeferred(CacheItemInterface $item): bool
+     {
+         if (!$item instanceof CacheItem) {
+             return false;
+@@ -306,7 +306,7 @@
+      *
+      * @return bool
+      */
+-    public function commit()
++    public function commit(): bool
+     {
+         return $this->invalidateTags([]);
+     }
+@@ -326,7 +326,7 @@
+         $this->commit();
+     }
+ 
+-    private function generateItems(iterable $items, array $tagKeys)
++    private function generateItems(iterable $items, array $tagKeys): \Generator
+     {
+         $bufferedItems = $itemTags = [];
+         $f = $this->setCacheItemTags;
+--- a/src/Symfony/Component/Cache/Adapter/TraceableAdapter.php
++++ b/src/Symfony/Component/Cache/Adapter/TraceableAdapter.php
+@@ -70,7 +70,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItem($key)
++    public function getItem($key): CacheItem
+     {
+         $event = $this->start(__FUNCTION__);
+         try {
+@@ -92,7 +92,7 @@
+      *
+      * @return bool
+      */
+-    public function hasItem($key)
++    public function hasItem($key): bool
+     {
+         $event = $this->start(__FUNCTION__);
+         try {
+@@ -107,7 +107,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItem($key)
++    public function deleteItem($key): bool
+     {
+         $event = $this->start(__FUNCTION__);
+         try {
+@@ -122,7 +122,7 @@
+      *
+      * @return bool
+      */
+-    public function save(CacheItemInterface $item)
++    public function save(CacheItemInterface $item): bool
+     {
+         $event = $this->start(__FUNCTION__);
+         try {
+@@ -137,7 +137,7 @@
+      *
+      * @return bool
+      */
+-    public function saveDeferred(CacheItemInterface $item)
++    public function saveDeferred(CacheItemInterface $item): bool
+     {
+         $event = $this->start(__FUNCTION__);
+         try {
+@@ -150,7 +150,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItems(array $keys = [])
++    public function getItems(array $keys = []): iterable
+     {
+         $event = $this->start(__FUNCTION__);
+         try {
+@@ -178,7 +178,7 @@
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '')
++    public function clear(string $prefix = ''): bool
+     {
+         $event = $this->start(__FUNCTION__);
+         try {
+@@ -197,7 +197,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItems(array $keys)
++    public function deleteItems(array $keys): bool
+     {
+         $event = $this->start(__FUNCTION__);
+         $event->result['keys'] = $keys;
+@@ -213,7 +213,7 @@
+      *
+      * @return bool
+      */
+-    public function commit()
++    public function commit(): bool
+     {
+         $event = $this->start(__FUNCTION__);
+         try {
+--- a/src/Symfony/Component/Cache/Traits/AbstractAdapterTrait.php
++++ b/src/Symfony/Component/Cache/Traits/AbstractAdapterTrait.php
+@@ -97,7 +97,7 @@
+      *
+      * @return bool
+      */
+-    public function hasItem($key)
++    public function hasItem($key): bool
+     {
+         $id = $this->getId($key);
+ 
+@@ -119,7 +119,7 @@
+      *
+      * @return bool
+      */
+-    public function clear(string $prefix = '')
++    public function clear(string $prefix = ''): bool
+     {
+         $this->deferred = [];
+         if ($cleared = $this->versioningIsEnabled) {
+@@ -157,7 +157,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItem($key)
++    public function deleteItem($key): bool
+     {
+         return $this->deleteItems([$key]);
+     }
+@@ -167,7 +167,7 @@
+      *
+      * @return bool
+      */
+-    public function deleteItems(array $keys)
++    public function deleteItems(array $keys): bool
+     {
+         $ids = [];
+ 
+@@ -205,7 +205,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItem($key)
++    public function getItem($key): CacheItem
+     {
+         if ($this->deferred) {
+             $this->commit();
+@@ -232,7 +232,7 @@
+     /**
+      * {@inheritdoc}
+      */
+-    public function getItems(array $keys = [])
++    public function getItems(array $keys = []): iterable
+     {
+         if ($this->deferred) {
+             $this->commit();
+@@ -258,7 +258,7 @@
+      *
+      * @return bool
+      */
+-    public function save(CacheItemInterface $item)
++    public function save(CacheItemInterface $item): bool
+     {
+         if (!$item instanceof CacheItem) {
+             return false;
+@@ -273,7 +273,7 @@
+      *
+      * @return bool
+      */
+-    public function saveDeferred(CacheItemInterface $item)
++    public function saveDeferred(CacheItemInterface $item): bool
+     {
+         if (!$item instanceof CacheItem) {
+             return false;
+@@ -295,7 +295,7 @@
+      *
+      * @return bool the previous state of versioning
+      */
+-    public function enableVersioning($enable = true)
++    public function enableVersioning($enable = true): bool
+     {
+         $wasEnabled = $this->versioningIsEnabled;
+         $this->versioningIsEnabled = (bool) $enable;
+@@ -334,7 +334,7 @@
+         }
+     }
+ 
+-    private function generateItems(iterable $items, array &$keys): iterable
++    private function generateItems(iterable $items, array &$keys): \Generator
+     {
+         $f = $this->createCacheItem;
+ 
+--- a/src/Symfony/Component/Cache/Adapter/AbstractAdapter.php
++++ b/src/Symfony/Component/Cache/Adapter/AbstractAdapter.php
+@@ -144,7 +144,7 @@
+      *
+      * @return bool
+      */
+-    public function commit()
++    public function commit(): bool
+     {
+         $ok = true;
+         $byLifetime = $this->mergeByLifetime;
+--- a/src/Symfony/Component/ExpressionLanguage/Tests/ExpressionLanguageTest.php
++++ b/src/Symfony/Component/ExpressionLanguage/Tests/ExpressionLanguageTest.php
+@@ -50,6 +50,7 @@
+             ->with($this->isInstanceOf(ParsedExpression::class))
+             ->willReturnCallback(function ($parsedExpression) use (&$savedParsedExpression) {
+                 $savedParsedExpression = $parsedExpression;
++                return $savedParsedExpression;
+             })
+         ;
+ 
+@@ -184,6 +185,7 @@
+             ->with($this->isInstanceOf(ParsedExpression::class))
+             ->willReturnCallback(function ($parsedExpression) use (&$savedParsedExpression) {
+                 $savedParsedExpression = $parsedExpression;
++                return $savedParsedExpression;
+             })
+         ;
+ 
