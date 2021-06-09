@@ -755,7 +755,20 @@ Last-Update: 2021-06-04
      {
          $id = $this->getId($key);
  
-@@ -119,7 +119,7 @@
+@@ -106,7 +106,11 @@
+         }
+ 
+         try {
+-            return $this->doHave($id);
++            if ($this->doHave($id)) {
++                return true;
++            } else {
++                return false;
++            }
+         } catch (\Exception $e) {
+             CacheItem::log($this->logger, 'Failed to check if key "{key}" is cached: '.$e->getMessage(), ['key' => $key, 'exception' => $e, 'cache-adapter' => get_debug_type($this)]);
+ 
+@@ -119,7 +123,7 @@
       *
       * @return bool
       */
@@ -764,7 +777,7 @@ Last-Update: 2021-06-04
      {
          $this->deferred = [];
          if ($cleared = $this->versioningIsEnabled) {
-@@ -157,7 +157,7 @@
+@@ -157,7 +161,7 @@
       *
       * @return bool
       */
@@ -773,7 +786,7 @@ Last-Update: 2021-06-04
      {
          return $this->deleteItems([$key]);
      }
-@@ -167,7 +167,7 @@
+@@ -167,7 +171,7 @@
       *
       * @return bool
       */
@@ -782,7 +795,7 @@ Last-Update: 2021-06-04
      {
          $ids = [];
  
-@@ -205,7 +205,7 @@
+@@ -205,7 +209,7 @@
      /**
       * {@inheritdoc}
       */
@@ -791,7 +804,7 @@ Last-Update: 2021-06-04
      {
          if ($this->deferred) {
              $this->commit();
-@@ -232,7 +232,7 @@
+@@ -232,7 +236,7 @@
      /**
       * {@inheritdoc}
       */
@@ -800,7 +813,7 @@ Last-Update: 2021-06-04
      {
          if ($this->deferred) {
              $this->commit();
-@@ -258,7 +258,7 @@
+@@ -258,7 +262,7 @@
       *
       * @return bool
       */
@@ -809,7 +822,7 @@ Last-Update: 2021-06-04
      {
          if (!$item instanceof CacheItem) {
              return false;
-@@ -273,7 +273,7 @@
+@@ -273,7 +277,7 @@
       *
       * @return bool
       */
@@ -818,7 +831,7 @@ Last-Update: 2021-06-04
      {
          if (!$item instanceof CacheItem) {
              return false;
-@@ -295,7 +295,7 @@
+@@ -295,7 +299,7 @@
       *
       * @return bool the previous state of versioning
       */
@@ -827,7 +840,7 @@ Last-Update: 2021-06-04
      {
          $wasEnabled = $this->versioningIsEnabled;
          $this->versioningIsEnabled = (bool) $enable;
-@@ -334,7 +334,7 @@
+@@ -334,7 +338,7 @@
          }
      }
  
