@@ -1,3 +1,15 @@
+Description: Triggers type error.
+ Fixes issue in tests:
+   Legacy deprecation notices (14)
+   KO src/Symfony/Component/HttpFoundation
+   PHP Fatal error:  Cannot use int as default value for parameter $with_cas of
+     type bool in /usr/share/php/PHPUnit/Framework/MockObject/MockClass.php(51)
+     : eval()'d code on line 141
+Author: Bryce Harrington <bryce@canonical.com>
+Origin: vendor
+Forwarded: no; will do once the archive opens.
+Last-Update: 2021-06-09
+
 --- a/src/Symfony/Component/HttpFoundation/Tests/ResponseTest.php
 +++ b/src/Symfony/Component/HttpFoundation/Tests/ResponseTest.php
 @@ -957,6 +957,7 @@
