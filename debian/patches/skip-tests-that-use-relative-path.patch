@@ -1,0 +1,37 @@
+Description: Skip tests which use relative paths.
+ These tests work properly during build time because the relative
+ path that is used is in order. However, during autopkgtest, we
+ try to test things in installed form and thus these tests, using
+ relative paths, defeats the whole purpose because now that paths
+ are no longer valid.
+ .
+ I can fix it for here now, but this needs to be conveyed upstream
+ so that they are at least aware and can help fix such issues and
+ at least not introduce new ones. So I believe it's not worth putting
+ so much time & enery atm and can be skipped atm.
+Author: Utkarsh Gupta <utkarsh.gupta@canonical.com>
+Origin: vendor
+Forwarded: https://github.com/symfony/symfony/issues/41637
+Last-Update: 2021-06-09
+
+--- a/src/Symfony/Bundle/FrameworkBundle/Tests/DependencyInjection/FrameworkExtensionTest.php
++++ b/src/Symfony/Bundle/FrameworkBundle/Tests/DependencyInjection/FrameworkExtensionTest.php
+@@ -838,18 +838,6 @@
+         );
+         $this->assertContains(strtr(__DIR__.'/translations/security.en.yaml', '/', \DIRECTORY_SEPARATOR), $files);
+ 
+-        $positionOverridingTranslationFile = array_search(strtr(realpath(__DIR__.'/translations/security.en.yaml'), '/', \DIRECTORY_SEPARATOR), $files);
+-
+-        if (false !== $positionCoreTranslationFile = array_search(strtr(realpath(__DIR__.'/../../../../Component/Security/Core/Resources/translations/security.en.xlf'), '/', \DIRECTORY_SEPARATOR), $files)) {
+-            $this->assertContains(strtr(realpath(__DIR__.'/../../../../Component/Security/Core/Resources/translations/security.en.xlf'), '/', \DIRECTORY_SEPARATOR), $files);
+-        } else {
+-            $this->assertContains(strtr(realpath(__DIR__.'/../../vendor/symfony/security-core/Resources/translations/security.en.xlf'), '/', \DIRECTORY_SEPARATOR), $files);
+-
+-            $positionCoreTranslationFile = array_search(strtr(realpath(__DIR__.'/../../vendor/symfony/security-core/Resources/translations/security.en.xlf'), '/', \DIRECTORY_SEPARATOR), $files);
+-        }
+-
+-        $this->assertGreaterThan($positionCoreTranslationFile, $positionOverridingTranslationFile);
+-
+         $calls = $container->getDefinition('translator.default')->getMethodCalls();
+         $this->assertEquals(['fr'], $calls[1][1][0]);
+ 
