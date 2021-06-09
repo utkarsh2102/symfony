@@ -24,3 +24,4 @@ Adapt-conflict-to-Debian-expectations.patch
 bump-deps-test.patch
 adapt-to-new-container-interface.patch
 disable-failing-tests.patch
+disable-doctrine-db-tests.patch
