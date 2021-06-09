@@ -1,3 +1,13 @@
+Description: Drop tests erroring on RO db.
+ These workaround test failures showing:
+ .
+   Doctrine\DBAL\Driver\PDO\Exception: SQLSTATE[HY000]:
+   General error: 8 attempt to write a readonly database
+Author: Bryce Harrington <bryce@canonical.com>
+Origin: vendor
+Forwarded: no; will do once the archive opens.
+Last-Update: 2021-06-09
+
 --- a/src/Symfony/Component/Messenger/Bridge/Doctrine/Tests/Transport/DoctrineIntegrationTest.php
 +++ b/src/Symfony/Component/Messenger/Bridge/Doctrine/Tests/Transport/DoctrineIntegrationTest.php
 @@ -48,6 +48,7 @@
