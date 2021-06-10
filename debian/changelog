@@ -1,3 +1,11 @@
+symfony (5.2.6+dfsg-1ubuntu3) impish; urgency=medium
+
+  * d/p/disable-epoch-parse-test.patch: Fix FTBFS on armhf due to
+    "strtotime(): Epoch doesn't fit in a PHP integer" when parsing a date
+    from 1730.
+
+ -- Bryce Harrington <bryce@canonical.com>  Thu, 10 Jun 2021 21:18:59 +0000
+
 symfony (5.2.6+dfsg-1ubuntu2) impish; urgency=medium
 
   * We're enabling tests again, so revert the following:
