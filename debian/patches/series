@@ -1,4 +1,3 @@
-disable-epoch-parse-test.patch
 Add-more-tests-to-group-tty.patch
 Increasing-timeout-in-test-AbstractProcessTest-testS.patch
 Declare-composer-group-for-tests-failing-outside-a-Compos.patch
@@ -28,3 +27,4 @@ disable-failing-tests.patch
 disable-doctrine-db-tests.patch
 disable-more-http-foundation-testing.patch
 skip-tests-that-use-relative-path.patch
+disable-epoch-parse-test.patch
