@@ -1,3 +1,10 @@
+symfony (5.2.6+dfsg-1ubuntu4) impish; urgency=medium
+
+  * d/p/disable-epoch-parse-test.patch: Also disable the 1730 test value
+    for the testParseWithMapObjects() test case.
+
+ -- Bryce Harrington <bryce@canonical.com>  Fri, 11 Jun 2021 04:31:53 +0000
+
 symfony (5.2.6+dfsg-1ubuntu3) impish; urgency=medium
 
   * d/p/disable-epoch-parse-test.patch: Fix FTBFS on armhf due to
