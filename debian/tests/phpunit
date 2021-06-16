@@ -25,6 +25,8 @@ components=$(find src/Symfony -mindepth 3 -type f -name phpunit.xml.dist -printf
 echo "$components" | parallel --gnu --keep-order 'echo -e "\\nRunning {} tests"; SYMFONY_DEPRECATIONS_HELPER=weak phpunit --colors=always --exclude-group network,tty,benchmark,intl-data,functional,composer {} || (echo -e "\\e[41mKO\\e[0m {}" && $(exit 1));' && exit_code=0 || exit_code=$?
 set -x
 
-patch -Rp1 < debian/patches/DEP-8/Tests-against-installed-classes.patch
+if ! patch -Rp1 < debian/patches/DEP-8/Tests-against-installed-classes.patch; then
+    echo "Patch failed to reverse-apply"
+fi
 
 exit $exit_code
