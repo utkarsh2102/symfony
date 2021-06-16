@@ -1,3 +1,10 @@
+symfony (5.2.6+dfsg-1ubuntu5) impish; urgency=medium
+
+  * d/t/phpunit: Don't treat patch cleanup error as fatal.
+    - If patch -R errors, mention it but don't count it as a testing failure.
+
+ -- Bryce Harrington <bryce@canonical.com>  Wed, 16 Jun 2021 16:34:58 +0000
+
 symfony (5.2.6+dfsg-1ubuntu4) impish; urgency=medium
 
   * d/p/disable-epoch-parse-test.patch: Also disable the 1730 test value
