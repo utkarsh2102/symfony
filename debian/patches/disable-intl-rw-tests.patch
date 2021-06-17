@@ -1,0 +1,89 @@
+--- a/src/Symfony/Component/Intl/Tests/Data/Bundle/Reader/IntlBundleReaderTest.php
++++ b/src/Symfony/Component/Intl/Tests/Data/Bundle/Reader/IntlBundleReaderTest.php
+@@ -32,49 +32,6 @@
+         $this->reader = new IntlBundleReader();
+     }
+ 
+-    public function testReadReturnsArrayAccess()
+-    {
+-        $data = $this->reader->read(__DIR__.'/Fixtures/res', 'ro');
+-
+-        $this->assertInstanceOf(\ArrayAccess::class, $data);
+-        $this->assertSame('Bar', $data['Foo']);
+-        $this->assertArrayNotHasKey('ExistsNot', $data);
+-    }
+-
+-    public function testReadFollowsAlias()
+-    {
+-        // "alias" = "ro"
+-        $data = $this->reader->read(__DIR__.'/Fixtures/res', 'alias');
+-
+-        $this->assertInstanceOf(\ArrayAccess::class, $data);
+-        $this->assertSame('Bar', $data['Foo']);
+-        $this->assertArrayNotHasKey('ExistsNot', $data);
+-    }
+-
+-    public function testReadDoesNotFollowFallback()
+-    {
+-        // "ro_MD" -> "ro"
+-        $data = $this->reader->read(__DIR__.'/Fixtures/res', 'ro_MD');
+-
+-        $this->assertInstanceOf(\ArrayAccess::class, $data);
+-        $this->assertSame('Bam', $data['Baz']);
+-        $this->assertArrayNotHasKey('Foo', $data);
+-        $this->assertNull($data['Foo']);
+-        $this->assertArrayNotHasKey('ExistsNot', $data);
+-    }
+-
+-    public function testReadDoesNotFollowFallbackAlias()
+-    {
+-        // "mo" = "ro_MD" -> "ro"
+-        $data = $this->reader->read(__DIR__.'/Fixtures/res', 'mo');
+-
+-        $this->assertInstanceOf(\ArrayAccess::class, $data);
+-        $this->assertSame('Bam', $data['Baz'], 'data from the aliased locale can be accessed');
+-        $this->assertArrayNotHasKey('Foo', $data);
+-        $this->assertNull($data['Foo']);
+-        $this->assertArrayNotHasKey('ExistsNot', $data);
+-    }
+-
+     public function testReadFailsIfNonExistingLocale()
+     {
+         $this->expectException(ResourceBundleNotFoundException::class);
+--- a/src/Symfony/Component/Intl/Tests/Data/Bundle/Writer/JsonBundleWriterTest.php
++++ b/src/Symfony/Component/Intl/Tests/Data/Bundle/Writer/JsonBundleWriterTest.php
+@@ -63,16 +63,4 @@
+ 
+         $this->assertFileEquals(__DIR__.'/Fixtures/en.json', $this->directory.'/en.json');
+     }
+-
+-    /**
+-     * @requires extension intl
+-     */
+-    public function testWriteResourceBundle()
+-    {
+-        $bundle = new \ResourceBundle('rb', __DIR__.'/Fixtures', false);
+-
+-        $this->writer->write($this->directory, 'en', $bundle);
+-
+-        $this->assertFileEquals(__DIR__.'/Fixtures/rb.json', $this->directory.'/en.json');
+-    }
+ }
+--- a/src/Symfony/Component/Intl/Tests/Data/Bundle/Writer/PhpBundleWriterTest.php
++++ b/src/Symfony/Component/Intl/Tests/Data/Bundle/Writer/PhpBundleWriterTest.php
+@@ -64,15 +64,4 @@
+         $this->assertFileEquals(__DIR__.'/Fixtures/en.php', $this->directory.'/en.php');
+     }
+ 
+-    /**
+-     * @requires extension intl
+-     */
+-    public function testWriteResourceBundle()
+-    {
+-        $bundle = new \ResourceBundle('rb', __DIR__.'/Fixtures', false);
+-
+-        $this->writer->write($this->directory, 'en', $bundle);
+-
+-        $this->assertFileEquals(__DIR__.'/Fixtures/rb.php', $this->directory.'/en.php');
+-    }
+ }
