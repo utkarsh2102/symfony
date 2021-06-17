@@ -1,3 +1,10 @@
+symfony (5.2.6+dfsg-1ubuntu7) impish; urgency=medium
+
+  * d/t/phpunit: Skip autopkgtest on armhf and s390x
+    - Fix suggested from deb #908377
+
+ -- Bryce Harrington <bryce@canonical.com>  Thu, 17 Jun 2021 10:09:41 -0700
+
 symfony (5.2.6+dfsg-1ubuntu6) impish; urgency=medium
 
   * d/p/disable-intl-rw-tests.patch: Disable cases failing on s390x
